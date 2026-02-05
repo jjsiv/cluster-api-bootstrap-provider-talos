@@ -5,6 +5,7 @@
 package v1alpha3
 
 import (
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -23,7 +24,28 @@ type TalosConfigSpec struct {
 	StrategicPatches []string `json:"strategicPatches,omitempty"`
 	// Set hostname in the machine configuration to some value.
 	Hostname HostnameSpec `json:"hostname,omitempty"`
+	// List of variables to expose to the config template.
+	// Variables can be used in StrategicPatches and data fields.
+	// GoTemplate must be enabled for this to work.
+	Variables []Variable `json:"variables,omitempty"`
 	// Important: Run "make" to regenerate code after modifying this file
+}
+
+// Variable is a definition of a variable to be exposed to the config template.
+type Variable struct {
+	// Name of the variable to be exposed to the template.
+	// +required
+	Name string `json:"name"`
+	// Value of the variable to be exposed to the template.
+	// +optional
+	Value string `json:"value,omitempty"`
+	// Specifies a source the value of this var should come from.
+	// +optional
+	ValueFrom *VariableValueSource `json:"valueFrom,omitempty"`
+}
+
+type VariableValueSource struct {
+	SecretKeyRef *corev1.SecretKeySelector `json:"secretKeyRef,omitempty"`
 }
 
 // HostnameSource is the definition of hostname source.

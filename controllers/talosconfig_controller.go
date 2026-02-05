@@ -14,6 +14,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"text/template"
 	"time"
 
 	"github.com/Masterminds/semver/v3"
@@ -32,6 +33,7 @@ import (
 	"github.com/siderolabs/talos/pkg/machinery/constants"
 	"github.com/siderolabs/talos/pkg/machinery/nethelpers"
 	"gopkg.in/yaml.v2"
+	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -361,9 +363,13 @@ func (r *TalosConfigReconciler) reconcileGenerate(ctx context.Context, tcScope *
 
 	// Handle strategic merge patches.
 	if strategicPatches := slices.AppendSeq(config.Spec.StrategicPatches, slices.Values(multiConfigPatches)); len(strategicPatches) > 0 {
-		patches := make([]configpatcher.Patch, 0, len(strategicPatches))
+		renderedStrategicPatches, err := r.renderTemplate(ctx, tcScope, strategicPatches...)
+		if err != nil {
+			return err
+		}
+		patches := make([]configpatcher.Patch, 0, len(renderedStrategicPatches))
 
-		for _, strategicPatch := range strategicPatches {
+		for _, strategicPatch := range renderedStrategicPatches {
 			patch, err := configpatcher.LoadPatch([]byte(strategicPatch))
 			if err != nil {
 				return fmt.Errorf("failure loading StrategicPatch: %w", err)
@@ -632,6 +638,60 @@ func (r *TalosConfigReconciler) genConfigs(ctx context.Context, scope *TalosConf
 	retBundle.BootstrapData = dataOut
 
 	return retBundle, patches, nil
+}
+
+func (r *TalosConfigReconciler) renderTemplate(ctx context.Context, scope *TalosConfigScope, templatesToRender ...string) ([]string, error) {
+	clusterName := scope.ConfigOwner.ClusterName()
+	machineName := scope.ConfigOwner.GetName()
+
+	customVars := make(map[string]any, len(scope.Config.Spec.Variables))
+	for _, customVar := range scope.Config.Spec.Variables {
+		if customVar.ValueFrom != nil {
+			secret := &corev1.Secret{}
+			if err := r.Client.Get(ctx, client.ObjectKey{
+				Namespace: scope.Config.Namespace,
+				Name:      customVar.ValueFrom.SecretKeyRef.Name,
+			}, secret); err != nil {
+				return nil, err
+			}
+
+			value, ok := secret.Data[customVar.ValueFrom.SecretKeyRef.Key]
+			if !ok {
+				return nil, fmt.Errorf("key %s in secret variable %s not found", customVar.ValueFrom.SecretKeyRef.Key, customVar.ValueFrom.SecretKeyRef.Name)
+			}
+
+			customVars[customVar.Name] = string(value)
+			continue
+		}
+
+		customVars[customVar.Name] = customVar.Value
+	}
+	vars := map[string]any{
+		"Cluster": map[string]any{
+			"Name": clusterName,
+		},
+		"Machine": map[string]any{
+			"Name": machineName,
+		},
+		"Vars": customVars,
+	}
+
+	var renderedTemplates []string
+	for _, templateToRender := range templatesToRender {
+		tmpl, err := template.New("configs").Parse(templateToRender)
+		if err != nil {
+			return nil, err
+		}
+
+		var buf bytes.Buffer
+		if err := tmpl.Execute(&buf, vars); err != nil {
+			return nil, err
+		}
+
+		renderedTemplates = append(renderedTemplates, buf.String())
+	}
+
+	return renderedTemplates, nil
 }
 
 // MachineToBootstrapMapFunc is a handler.ToRequestsFunc to be used to enqueue

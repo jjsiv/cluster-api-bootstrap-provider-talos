@@ -138,6 +138,54 @@ spec:
                 type: array
               talosVersion:
                 type: string
+              variables:
+                description: |-
+                  List of variables to expose to the config template.
+                  Variables can be used in StrategicPatches and data fields.
+                  GoTemplate must be enabled for this to work.
+                items:
+                  description: Variable is a definition of a variable to be exposed
+                    to the config template.
+                  properties:
+                    name:
+                      description: Name of the variable to be exposed to the template.
+                      type: string
+                    value:
+                      description: Value of the variable to be exposed to the template.
+                      type: string
+                    valueFrom:
+                      description: Specifies a source the value of this var should
+                        come from.
+                      properties:
+                        secretKeyRef:
+                          description: SecretKeySelector selects a key of a Secret.
+                          properties:
+                            key:
+                              description: The key of the secret to select from.  Must
+                                be a valid secret key.
+                              type: string
+                            name:
+                              default: ""
+                              description: |-
+                                Name of the referent.
+                                This field is effectively required, but due to backwards compatibility is
+                                allowed to be empty. Instances of this type with an empty value here are
+                                almost certainly wrong.
+                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                              type: string
+                            optional:
+                              description: Specify whether the Secret or its key must
+                                be defined
+                              type: boolean
+                          required:
+                          - key
+                          type: object
+                          x-kubernetes-map-type: atomic
+                      type: object
+                  required:
+                  - name
+                  type: object
+                type: array
             required:
             - generateType
             type: object
