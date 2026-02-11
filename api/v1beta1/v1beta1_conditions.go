@@ -6,7 +6,7 @@ package v1beta1
 
 import capiv1 "sigs.k8s.io/cluster-api/api/core/v1beta2"
 
-// Conditions and condition Reasons for the TalosConfig object
+// Deprecated CAPI V1beta1 contract TalosConfig conditions. To be removed in a future version
 
 const (
 	// DataSecretAvailableCondition documents the status of the bootstrap secret generation process.

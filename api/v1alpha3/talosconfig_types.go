@@ -100,7 +100,6 @@ type TalosConfigV1Beta2Status struct {
 
 // +kubebuilder:object:root=true
 // +kubebuilder:resource:path=talosconfigs,scope=Namespaced,categories=cluster-api
-// +kubebuilder:storageversion
 // +kubebuilder:subresource:status
 
 // TalosConfig is the Schema for the talosconfigs API
