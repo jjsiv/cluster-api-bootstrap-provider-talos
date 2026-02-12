@@ -16,7 +16,7 @@ spec:
     singular: talosconfigtemplate
   scope: Namespaced
   versions:
-  - name: v1alpha2
+  - name: v1alpha3
     schema:
       openAPIV3Schema:
         description: TalosConfigTemplate is the Schema for the talosconfigtemplates
@@ -48,9 +48,44 @@ spec:
                   spec:
                     description: TalosConfigSpec defines the desired state of TalosConfig
                     properties:
+                      configPatches:
+                        items:
+                          properties:
+                            op:
+                              type: string
+                            path:
+                              type: string
+                            value:
+                              x-kubernetes-preserve-unknown-fields: true
+                          required:
+                          - op
+                          - path
+                          type: object
+                        type: array
                       data:
                         type: string
                       generateType:
+                        type: string
+                      hostname:
+                        description: Set hostname in the machine configuration to
+                          some value.
+                        properties:
+                          source:
+                            description: |-
+                              Source of the hostname.
+
+                              Allowed values:
+                              "MachineName" (use linked Machine's Name).
+                              "InfrastructureName" (use linked Machine's infrastructure's name).
+                            type: string
+                        type: object
+                      strategicPatches:
+                        description: Talos Linux machine configuration strategic merge
+                          patch list.
+                        items:
+                          type: string
+                        type: array
+                      talosVersion:
                         type: string
                     required:
                     - generateType
@@ -62,7 +97,9 @@ spec:
         type: object
     served: true
     storage: false
-  - name: v1alpha3
+    subresources:
+      status: {}
+  - name: v1beta1
     schema:
       openAPIV3Schema:
         description: TalosConfigTemplate is the Schema for the talosconfigtemplates
