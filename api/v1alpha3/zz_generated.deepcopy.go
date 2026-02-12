@@ -142,7 +142,7 @@ func (in *TalosConfigStatus) DeepCopyInto(out *TalosConfigStatus) {
 	}
 	if in.Conditions != nil {
 		in, out := &in.Conditions, &out.Conditions
-		*out = make([]v1beta1.Condition, len(*in))
+		*out = make(v1beta1.Conditions, len(*in))
 		for i := range *in {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}

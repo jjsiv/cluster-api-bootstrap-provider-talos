@@ -76,16 +76,6 @@ func RegisterConversions(s *runtime.Scheme) error {
 	}); err != nil {
 		return err
 	}
-	if err := s.AddGeneratedConversionFunc((*TalosConfigStatus)(nil), (*v1beta1.TalosConfigStatus)(nil), func(a, b interface{}, scope conversion.Scope) error {
-		return Convert_v1alpha3_TalosConfigStatus_To_v1beta1_TalosConfigStatus(a.(*TalosConfigStatus), b.(*v1beta1.TalosConfigStatus), scope)
-	}); err != nil {
-		return err
-	}
-	if err := s.AddGeneratedConversionFunc((*v1beta1.TalosConfigStatus)(nil), (*TalosConfigStatus)(nil), func(a, b interface{}, scope conversion.Scope) error {
-		return Convert_v1beta1_TalosConfigStatus_To_v1alpha3_TalosConfigStatus(a.(*v1beta1.TalosConfigStatus), b.(*TalosConfigStatus), scope)
-	}); err != nil {
-		return err
-	}
 	if err := s.AddGeneratedConversionFunc((*TalosConfigTemplate)(nil), (*v1beta1.TalosConfigTemplate)(nil), func(a, b interface{}, scope conversion.Scope) error {
 		return Convert_v1alpha3_TalosConfigTemplate_To_v1beta1_TalosConfigTemplate(a.(*TalosConfigTemplate), b.(*v1beta1.TalosConfigTemplate), scope)
 	}); err != nil {
@@ -123,6 +113,26 @@ func RegisterConversions(s *runtime.Scheme) error {
 	}
 	if err := s.AddGeneratedConversionFunc((*v1beta1.TalosConfigTemplateSpec)(nil), (*TalosConfigTemplateSpec)(nil), func(a, b interface{}, scope conversion.Scope) error {
 		return Convert_v1beta1_TalosConfigTemplateSpec_To_v1alpha3_TalosConfigTemplateSpec(a.(*v1beta1.TalosConfigTemplateSpec), b.(*TalosConfigTemplateSpec), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddConversionFunc((*v1.Condition)(nil), (*corev1beta1.Condition)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1_Condition_To_v1beta1_Condition(a.(*v1.Condition), b.(*corev1beta1.Condition), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddConversionFunc((*TalosConfigStatus)(nil), (*v1beta1.TalosConfigStatus)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha3_TalosConfigStatus_To_v1beta1_TalosConfigStatus(a.(*TalosConfigStatus), b.(*v1beta1.TalosConfigStatus), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddConversionFunc((*corev1beta1.Condition)(nil), (*v1.Condition)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1beta1_Condition_To_v1_Condition(a.(*corev1beta1.Condition), b.(*v1.Condition), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddConversionFunc((*v1beta1.TalosConfigStatus)(nil), (*TalosConfigStatus)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1beta1_TalosConfigStatus_To_v1alpha3_TalosConfigStatus(a.(*v1beta1.TalosConfigStatus), b.(*TalosConfigStatus), scope)
 	}); err != nil {
 		return err
 	}
@@ -294,8 +304,9 @@ func autoConvert_v1alpha3_TalosConfigStatus_To_v1beta1_TalosConfigStatus(in *Tal
 		in, out := &in.Conditions, &out.Conditions
 		*out = make([]v1.Condition, len(*in))
 		for i := range *in {
-			// FIXME: Provide conversion function to convert corev1beta1.Condition to v1.Condition
-			compileErrorOnMissingConversion()
+			if err := Convert_v1beta1_Condition_To_v1_Condition(&(*in)[i], &(*out)[i], s); err != nil {
+				return err
+			}
 		}
 	} else {
 		out.Conditions = nil
@@ -312,10 +323,11 @@ func autoConvert_v1beta1_TalosConfigStatus_To_v1alpha3_TalosConfigStatus(in *v1b
 	out.ObservedGeneration = in.ObservedGeneration
 	if in.Conditions != nil {
 		in, out := &in.Conditions, &out.Conditions
-		*out = make([]corev1beta1.Condition, len(*in))
+		*out = make(corev1beta1.Conditions, len(*in))
 		for i := range *in {
-			// FIXME: Provide conversion function to convert v1.Condition to corev1beta1.Condition
-			compileErrorOnMissingConversion()
+			if err := Convert_v1_Condition_To_v1beta1_Condition(&(*in)[i], &(*out)[i], s); err != nil {
+				return err
+			}
 		}
 	} else {
 		out.Conditions = nil

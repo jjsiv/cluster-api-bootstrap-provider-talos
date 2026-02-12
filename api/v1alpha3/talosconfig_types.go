@@ -82,7 +82,7 @@ type TalosConfigStatus struct {
 
 	// Conditions defines current service state of the TalosConfig.
 	// +optional
-	Conditions []capiv1.Condition `json:"conditions,omitempty"`
+	Conditions capiv1.Conditions `json:"conditions,omitempty"`
 
 	// v1beta2 groups all the fields that will be added or modified in TalosConfig's status with the V1Beta2 version.
 	// +optional

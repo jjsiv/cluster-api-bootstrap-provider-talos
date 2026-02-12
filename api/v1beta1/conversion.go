@@ -4,5 +4,7 @@
 
 package v1beta1
 
-func (*TalosConfig) Hub()     {}
-func (*TalosConfigList) Hub() {}
+func (*TalosConfigTemplate) Hub()     {}
+func (*TalosConfigTemplateList) Hub() {}
+func (*TalosConfig) Hub()             {}
+func (*TalosConfigList) Hub()         {}

@@ -51,7 +51,7 @@ type TalosConfigStatus struct {
 	// initialization provides observations of the TalosConfig initialization process.
 	// NOTE: Fields in this struct are part of the Cluster API contract and are used to orchestrate initial Machine provisioning.
 	// +optional
-	Initialization TalosConfigInitlizationStatus `json:"initialization,omitempty,omitzero"`
+	Initialization TalosConfigInitializationStatus `json:"initialization,omitempty,omitzero"`
 
 	// DataSecretName is the name of the secret that stores the bootstrap data script.
 	// +optional
@@ -78,7 +78,7 @@ type TalosConfigStatus struct {
 
 // TalosConfigInitializationStatus provides observations of the TalosConfig initialization process.
 // +kubebuilder:validation:MinProperties=1
-type TalosConfigInitlizationStatus struct {
+type TalosConfigInitializationStatus struct {
 	// dataSecretCreated is true when the Machine's boostrap secret is created.
 	// NOTE: this field is part of the Cluster API contract, and it is used to orchestrate initial Machine provisioning.
 	// +optional
