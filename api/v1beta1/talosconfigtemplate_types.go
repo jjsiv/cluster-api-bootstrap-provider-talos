@@ -17,6 +17,9 @@ type TalosConfigTemplateSpec struct {
 // +kubebuilder:resource:path=talosconfigtemplates,scope=Namespaced,categories=cluster-api
 // +kubebuilder:storageversion
 // +kubebuilder:subresource:status
+// +kubebuilder:printcolumn:name="ClusterClass",type="string",JSONPath=`.metadata.ownerReferences[?(@.kind=="ClusterClass")].name`,description="Name of the ClusterClass owning this template"
+// +kubebuilder:printcolumn:name="Cluster",type="string",JSONPath=`.metadata.ownerReferences[?(@.kind=="Cluster")].name`,description="Name of the Cluster owning this template"
+// +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp",description="Time duration since creation of TalosConfigTemplate"
 
 // TalosConfigTemplate is the Schema for the talosconfigtemplates API
 type TalosConfigTemplate struct {

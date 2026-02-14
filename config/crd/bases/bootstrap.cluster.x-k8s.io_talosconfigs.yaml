@@ -242,7 +242,24 @@ spec:
     storage: false
     subresources:
       status: {}
-  - name: v1beta1
+  - additionalPrinterColumns:
+    - description: Cluster
+      jsonPath: .metadata.labels['cluster\.x-k8s\.io/cluster-name']
+      name: Cluster
+      type: string
+    - description: Boostrap secret is created
+      jsonPath: .status.initialization.dataSecretCreated
+      name: Initialized
+      type: string
+    - description: Boostrap secret name
+      jsonPath: .status.dataSecretName
+      name: Bootstrap secret
+      type: string
+    - description: Time duration since creation of TalosConfig
+      jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1beta1
     schema:
       openAPIV3Schema:
         description: TalosConfig is the Schema for the talosconfigs API
@@ -289,6 +306,11 @@ spec:
                 description: |-
                   Talos machine configuration type to generate: Supported values are:
                   controlplane, worker, init (deprecated), none (configuration must be then provided in data field).
+                enum:
+                - controlplane
+                - worker
+                - init
+                - none
                 type: string
               hostname:
                 description: Set hostname in the machine configuration to some value.

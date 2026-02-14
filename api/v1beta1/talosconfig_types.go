@@ -23,6 +23,7 @@ type TalosConfigSpec struct {
 
 	// Talos machine configuration type to generate: Supported values are:
 	// controlplane, worker, init (deprecated), none (configuration must be then provided in data field).
+	// +kubebuilder:validation:Enum=controlplane;worker;init;none
 	GenerateType string `json:"generateType"`
 
 	// Machine configuration in case generateType=none.
@@ -132,6 +133,10 @@ type TalosConfigV1Beta1DeprecatedStatus struct {
 // +kubebuilder:resource:path=talosconfigs,scope=Namespaced,categories=cluster-api
 // +kubebuilder:storageversion
 // +kubebuilder:subresource:status
+// +kubebuilder:printcolumn:name="Cluster",type="string",JSONPath=".metadata.labels['cluster\\.x-k8s\\.io/cluster-name']",description="Cluster"
+// +kubebuilder:printcolumn:name="Initialized",type="string",JSONPath=`.status.initialization.dataSecretCreated`,description="Boostrap secret is created"
+// +kubebuilder:printcolumn:name="Bootstrap secret",type="string",JSONPath=`.status.dataSecretName`,description="Boostrap secret name"
+// +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp",description="Time duration since creation of TalosConfig"
 
 // TalosConfig is the Schema for the talosconfigs API
 type TalosConfig struct {

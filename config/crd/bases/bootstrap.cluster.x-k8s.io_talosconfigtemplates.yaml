@@ -99,7 +99,20 @@ spec:
     storage: false
     subresources:
       status: {}
-  - name: v1beta1
+  - additionalPrinterColumns:
+    - description: Name of the ClusterClass owning this template
+      jsonPath: .metadata.ownerReferences[?(@.kind=="ClusterClass")].name
+      name: ClusterClass
+      type: string
+    - description: Name of the Cluster owning this template
+      jsonPath: .metadata.ownerReferences[?(@.kind=="Cluster")].name
+      name: Cluster
+      type: string
+    - description: Time duration since creation of TalosConfigTemplate
+      jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1beta1
     schema:
       openAPIV3Schema:
         description: TalosConfigTemplate is the Schema for the talosconfigtemplates
@@ -153,6 +166,11 @@ spec:
                         description: |-
                           Talos machine configuration type to generate: Supported values are:
                           controlplane, worker, init (deprecated), none (configuration must be then provided in data field).
+                        enum:
+                        - controlplane
+                        - worker
+                        - init
+                        - none
                         type: string
                       hostname:
                         description: Set hostname in the machine configuration to
