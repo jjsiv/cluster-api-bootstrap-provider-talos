@@ -334,12 +334,6 @@ func TestIntegration(t *testing.T) {
 			default:
 				assert.Equal(t, talosmachine.TypeWorker, provider.Machine().Type())
 			}
-
-			// TODO: check if we should check for cluster wide config instead
-			// if provider.Machine().Type() != talosmachine.TypeWorker {
-			// 	// with user config, can only generate config for controlplane nodes
-			// 	assertClientConfig(t, talosConfig)
-			// }
 		}
 
 		assertClusterCA(ctx, t, c, cluster, assertMachineConfiguration(ctx, t, c, controlplanes[0]))
@@ -385,7 +379,7 @@ func TestIntegration(t *testing.T) {
 			require.NoError(t, err)
 
 			if conditions.IsFalse(talosConfig, bootstrapv1beta1.DataSecretAvailableCondition) &&
-				conditions.GetReason(talosConfig, bootstrapv1beta1.DataSecretAvailableCondition) == bootstrapv1beta1.DataSecretNotAvailableReason {
+				conditions.GetReason(talosConfig, bootstrapv1beta1.DataSecretAvailableCondition) == bootstrapv1beta1.DataSecretNotVailableInternalErrorReason {
 				break
 			}
 

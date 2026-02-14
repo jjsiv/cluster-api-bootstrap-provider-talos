@@ -16,12 +16,24 @@ const (
 
 // TalosConfigSpec defines the desired state of TalosConfig
 type TalosConfigSpec struct {
-	TalosVersion  string          `json:"talosVersion,omitempty"` //talos version formatted like v0.8. used for backwards compatibility
-	GenerateType  string          `json:"generateType"`           //none,init,controlplane,worker mutually exclusive w/ data
-	Data          string          `json:"data,omitempty"`
+	// Version of Talos to generate machine configuration for, i.e. v1.0 (patch version may be omitted).
+	// Defaults to the latest supported version if unspecified.
+	// It is recommended to set this field explicitly to avoid unexpected issues during provider upgrades.
+	TalosVersion string `json:"talosVersion,omitempty"`
+
+	// Talos machine configuration type to generate: Supported values are:
+	// controlplane, worker, init (deprecated), none (configuration must be then provided in data field).
+	GenerateType string `json:"generateType"`
+
+	// Machine configuration in case generateType=none.
+	Data string `json:"data,omitempty"`
+
+	// RFC6902 JSON patches to apply to machine configuration.
 	ConfigPatches []ConfigPatches `json:"configPatches,omitempty"`
+
 	// Talos Linux machine configuration strategic merge patch list.
 	StrategicPatches []string `json:"strategicPatches,omitempty"`
+
 	// Set hostname in the machine configuration to some value.
 	Hostname HostnameSpec `json:"hostname,omitempty"`
 	// Important: Run "make" to regenerate code after modifying this file

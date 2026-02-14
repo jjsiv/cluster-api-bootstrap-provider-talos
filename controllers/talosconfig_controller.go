@@ -322,7 +322,7 @@ func (r *TalosConfigReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 		conditions.Set(config, metav1.Condition{
 			Type:    bootstrapv1beta1.DataSecretAvailableCondition,
 			Status:  metav1.ConditionFalse,
-			Reason:  bootstrapv1beta1.DataSecretNotAvailableReason,
+			Reason:  bootstrapv1beta1.DataSecretNotVailableInternalErrorReason,
 			Message: fmt.Sprintf("Data secret generation failed: %s", err),
 		})
 

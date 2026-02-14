@@ -45,6 +45,9 @@ const (
 	// DataSecretAvailableCondition surfaces when Talos bootstrap secret is available.
 	DataSecretAvailableReason = capiv1.AvailableReason
 
-	// DataSecretNotAvailableCondition surfaces when Talos bootstrap is not available.
+	// DataSecretNotAvailableCondition surfaces when Talos bootstrap secret is not available.
 	DataSecretNotAvailableReason = capiv1.NotAvailableReason
+
+	// DataSecretNotAvailableInternalErrorReason surfaces unexpected failures when generating Talos bootstrap secret.
+	DataSecretNotVailableInternalErrorReason = capiv1.InternalErrorReason
 )

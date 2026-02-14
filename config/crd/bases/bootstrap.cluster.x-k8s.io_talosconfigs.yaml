@@ -268,6 +268,7 @@ spec:
             description: TalosConfigSpec defines the desired state of TalosConfig
             properties:
               configPatches:
+                description: RFC6902 JSON patches to apply to machine configuration.
                 items:
                   properties:
                     op:
@@ -282,8 +283,12 @@ spec:
                   type: object
                 type: array
               data:
+                description: Machine configuration in case generateType=none.
                 type: string
               generateType:
+                description: |-
+                  Talos machine configuration type to generate: Supported values are:
+                  controlplane, worker, init (deprecated), none (configuration must be then provided in data field).
                 type: string
               hostname:
                 description: Set hostname in the machine configuration to some value.
@@ -304,6 +309,10 @@ spec:
                   type: string
                 type: array
               talosVersion:
+                description: |-
+                  Version of Talos to generate machine configuration for, i.e. v1.0 (patch version may be omitted).
+                  Defaults to the latest supported version if unspecified.
+                  It is recommended to set this field explicitly to avoid unexpected issues during provider upgrades.
                 type: string
             required:
             - generateType
@@ -449,16 +458,12 @@ spec:
                           failureMessage will be set on non-retryable errors
 
                           Deprecated: This field is deprecated and is going to be removed when support for CAPI v1beta1 contract will be dropped.
-                        maxLength: 10240
-                        minLength: 1
                         type: string
                       failureReason:
                         description: |-
                           failureReason will be set on non-retryable errors
 
                           Deprecated: This field is deprecated and is going to be removed when support for CAPI v1beta1 contract will be dropped.
-                        maxLength: 256
-                        minLength: 1
                         type: string
                     type: object
                 type: object
