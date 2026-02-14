@@ -1,5 +1,5 @@
 REGISTRY ?= ghcr.io
-USERNAME ?= siderolabs
+USERNAME ?= jjsiv
 SHA ?= $(shell git describe --match=none --always --abbrev=8 --dirty)
 TAG ?= $(shell git describe --tag --always --dirty)
 BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD)
@@ -20,7 +20,7 @@ CONTROLLER_GEN_VERSION ?= v0.19.0
 CONVERSION_GEN_VERSION ?= v0.34.0
 
 BUILD := docker buildx build
-PLATFORM ?= linux/amd64
+PLATFORM ?= linux/arm64
 PROGRESS ?= auto
 PUSH ?= false
 COMMON_ARGS := --file=Dockerfile

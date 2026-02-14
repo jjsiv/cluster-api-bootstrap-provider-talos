@@ -106,8 +106,6 @@ type TalosConfigV1Beta1DeprecatedStatus struct {
 	// Deprecated: This field is deprecated and is going to be removed when support for CAPI v1beta1 contract will be dropped.
 	//
 	// +optional
-	// +kubebuilder:validation:MinLength=1
-	// +kubebuilder:validation:MaxLength=256
 	FailureReason string `json:"failureReason,omitempty"`
 
 	// failureMessage will be set on non-retryable errors
@@ -115,8 +113,6 @@ type TalosConfigV1Beta1DeprecatedStatus struct {
 	// Deprecated: This field is deprecated and is going to be removed when support for CAPI v1beta1 contract will be dropped.
 	//
 	// +optional
-	// +kubebuilder:validation:MinLength=1
-	// +kubebuilder:validation:MaxLength=10240
 	FailureMessage string `json:"failureMessage,omitempty"`
 }
 
